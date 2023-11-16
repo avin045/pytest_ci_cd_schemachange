@@ -1,0 +1,11 @@
+{
+    "warehouse": "compute_wh",
+    "role" : "ACCOUNTADMIN",
+    "database" : "HR_DB",
+    "schema": "HR_SCHEMA",
+    "src" : "./transformation_query/query.sql",
+    "target" : "HR_SCHEMA.EMPLOYEE_DETAILS_DYNAMIC",
+    "columns_list_duplicates_or_not" : "EMPID,DEPARTMENT,POSITION",
+    "columns_list_null_check" : "EMPID,DEPARTMENT",
+    "sttm_table" : "sttm.sttm_schema.EMPLOYEE_DETAILS_STTM"
+}
