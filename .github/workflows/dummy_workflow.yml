@@ -43,15 +43,17 @@ jobs:
           python -m pip install --upgrade pip
         #   pip install -r requirements.txt
 
-      - id: json
+      - name: Read JSON file
+        id: read-json
         uses: juliangruber/read-file-action@v1
-        with: 
-          path: ./config/config.json
-
-      - name: Set variable
-        run: |
-          $VALUE = ${{ fromJson(steps.json.outputs.content) | Select-Object -ExpandProperty 'warehouse' }}
-          echo "VALUE=$VALUE" >> $GITHUB_ENV
+        with:
+            path: ./config/config.json
+    
+      - name: Set variable from JSON
+        run: echo "VALUE=$(echo '${{ steps.read-json.outputs.content }}' | jq -r '.warehouse')" >> $GITHUB_ENV
+    
+      - name: Print variable
+        run: echo $VALUE
 
 
 
