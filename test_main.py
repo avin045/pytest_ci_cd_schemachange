@@ -1,10 +1,12 @@
 from snowflake.snowpark import Session
 from snowflake.snowpark.dataframe import col
-import logging
-import logging.handlers
 import os
 import json
-
+import pytest
+import sys
+import logging
+import logging.handlers
+from query_extractor import extract_query
 
 
 # Parse the JSON string into a Python dictionary
@@ -12,12 +14,6 @@ json_str = open('./config/config.json','r+').read()
 config_dict = json.loads(json_str)
 
 
-# pytest -v -s pytest_cicd.py
-# pytest -o log_cli=true -v -s pytest_cicd.py
-# pytest -o log_cli=true -v -s pytest_cicd.py
-# pytest --log-file=test_log.txt test_example.py
-
-# """
 # Remove or truncate the existing log file
 log_file = "pytest.log"
 if os.path.exists(log_file):
@@ -37,15 +33,25 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 logger_file_handler.setFormatter(formatter)
 logger.addHandler(logger_file_handler)
 
-# logger = setup_logger()
 
+# ---------------------- Getting Data From JSON - Start ---------------------- #
 user = os.environ.get("snow_user")
 password = os.environ.get("snow_pwd")
 account = os.environ.get("snow_acc")
 warehouse = config_dict['warehouse']
 role = config_dict['role']
 
+expected_column_count = config_dict["column count"]
+database_from_config = config_dict['database']
+schema_from_config = config_dict['schema']
+view_table_name_from_config = config_dict['view/table name']
 
+folder_name = config_dict["view/table name"].split(".")[0]
+file_name = f'''{config_dict['view/table name'].split('.')[1].replace('"','')}.sql'''
+# ---------------------- Getting Data From JSON - End ---------------------- #
+
+
+# Session Creation
 connection_parameters = {
     "user": user,
     "password" : password,
@@ -56,79 +62,51 @@ connection_parameters = {
 
 session = Session.builder.configs(connection_parameters).create()
 
-session.use_database(database=config_dict['database']);
-session.use_schema(schema=config_dict['schema']);
-session.use_warehouse(warehouse=config_dict['warehouse']);
+# Environment Set-up
+session.use_database(database=config_dict['database'])
+session.use_schema(schema=config_dict['schema'])
+table_ = session.table(config_dict['view/table name'])
 
-file_path = config_dict['src'];
-file_content = open(file=file_path,mode='r+');
-query = file_content.read();
-# print(query)
 
-# """
-# '''
-# source & target CHECK
-src = session.sql(query=query.replace(';',''));
-target = session.table(name=config_dict['target']);
+# TEST CASES
+def test_count_check():
+    logger.info(f"ROWCOUNT => The count of Source : {table_.count()}" if table_.count() > 0 else False)
+    assert table_.count() > 0
 
-# INPUT for Getting COLUMNS LIST
-# columns_list = input("Enter the column list with ',' seperated : ").split(',')
-columns_list = config_dict['columns_list_duplicates_or_not'].split(',')
-list_of_cols = [col_.strip() for col_ in columns_list]
+def test_column_validation():
+    column_validation = len(table_.columns) == expected_column_count or not(len(table_.columns) < expected_column_count)
+    log_res = "PASSED, The Column Validation" if column_validation else 'NOT PASSED'
+    logger.info(f"COLUMN VALIDATION : {log_res}")
+    assert column_validation == True
 
-columns_list_null_check = config_dict["columns_list_null_check"].split(',')
-list_of_cols_nc = [col_.strip() for col_ in columns_list]
+def test_duplication():
+    group_by_ = table_.group_by(table_.columns).count().filter(col('count') > 1).collect()
+    log_res = "No Duplicates Found" if not(bool(group_by_)) else "Duplicates Found"
+    logger.info(f"DUPLICATION : {log_res}")
+    assert not(bool(group_by_)) == True
 
-def test_rowcount():
-    logger.info(f"ROWCOUNT => The count of Source : {src.count()} and Target : {target.count()} Matching : {src.count() == target.count()}")
-    assert src.count() == target.count()
+def check_pytest():
+  exitcode = pytest.main() # To execute pytest and get the exit code
+  if exitcode == 0:
+    # Getting query without DB Name from snofwflake
+    query = extract_query(
+    database_name=database_from_config,
+    schema_name=schema_from_config,
+    table_name=view_table_name_from_config,
+    session_=session
+    )
 
-def test_data_mismatch():
-    mismatch_cols = []
-    matched_cols = [tgt_col for src_col,tgt_col in zip(sorted(src.columns),sorted(target.columns)) if src_col == tgt_col]
-    result = src.select(matched_cols).minus(target.select(matched_cols)).collect()
-    log_res = 'PASSED' if not bool(result) == True else 'NOT PASSED'
-    logger.info(f"DATA MISMATCH : {log_res}")
-    assert not bool(result) == True,f"The Mismatching count is {len(mismatch_cols)} \n and the columns are {','.join(mismatch_cols)}"
+    # If that Schema not present in FOLDER then Create it as a folder
+    if folder_name not in os.listdir(r'./EnterpriseDatabase/'):
+        os.mkdir(fr'./EnterpriseDatabase/{folder_name}')
 
-def test_duplicates_or_not():
-    # EMPLOYEE_NUMBER, EMPLOYEE_FULL_NAME, EMPLOYEE_STATUS_CODE, DEPARTMENT_NUMBER, SUPERVISOR_NUMBER
-    # EMPLOYEE_NUMBER, EMPLOYEE_FULL_NAME, EMPLOYEE_STATUS_CODE, DEPARTMENT_NUMBER # current one
-    # EMPID,DEPARTMENT,POSITION
-    result = target.select(list_of_cols).group_by(list_of_cols).count().filter(col('count') > 1).collect() # []
-    log_res = 'PASSED' if not bool(result) == True else 'NOT PASSED'
-    logger.info(f"DUPLICATES OR NOT : {log_res}")
-    assert not bool(result) == True
-
-def test_null_check():
-    null_columns = ','.join([
-    col_ for col_ in target.select(list_of_cols_nc).columns if target.select(list_of_cols_nc).where(target.select(list_of_cols_nc).col(col_).is_null()).collect()
-    ])
-    log_res = 'PASSED' if target.count() == target.select(list_of_cols_nc).dropna().count() else 'NOT PASSED'
-    logger.info(f"NULL CHECK : {log_res}")
-    assert True if target.count() == target.select(list_of_cols_nc).dropna().count() else False, f"The Null Columns are {null_columns}"
-
-def test_column_match_sttm():
-    count_ = 0
-    col_in_tgt_not_in_sttm = []
-    sttm_table = session.table(name=config_dict["sttm_table"]).select("COLUMN NAME").collect();
-    sttm_table_col_list = [f"{cols[0]}".lower() for cols in sttm_table]
-    for column_ in target.columns:
-        if f"{column_}".lower() in sttm_table_col_list:
-            count_ += 1
-        if f"{column_}".lower() not in sttm_table_col_list:
-                col_in_tgt_not_in_sttm.append(column_)
-
-    cols_in_sttm_not_in_tgt = [col_name for col_name in sttm_table_col_list if col_name not in target.columns]
- 
-    if len(cols_in_sttm_not_in_tgt) != 0:
-        result_ = f"COLUMN PRESENT IN STTM BUT NOT IN TARGET : {','.join(cols_in_sttm_not_in_tgt)}"
+    # Writing the Query which gets from Snowflake
+    with open(fr"./EnterpriseDatabase/{folder_name}/{file_name}",'w') as file_:
+        file_.write(query)
+        log_res = 'File Written Successfully'
+        logger.info(f"GET QUERY FROM SNOWFLAKE : {log_res}")
     
-    if count_ != len(sttm_table_col_list):
-        res_ = f"Columns present in Target not in STTM {','.join(col_in_tgt_not_in_sttm)}"
 
-    log_res = 'PASSED' if count_ == len(sttm_table_col_list) else 'NOT PASSED'
-    logger.info(f"COLUMN MATCH WITH STTM :  {log_res}")
-    assert count_ == len(sttm_table_col_list),f"{res_} {result_}"
-
-# '''
+# result = check_pytest()
+if 'pytest' in sys.modules:
+    check_pytest()

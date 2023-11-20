@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"hide-files.files": [
+			"pytest_ci_cd.code_schemachange-workspace.code-workspace"
+		]
+	}
+}

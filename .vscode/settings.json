@@ -1,0 +1,12 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "pytest_ci_cd.code_schemachange-workspace.code-workspace": true
+    },
+    "hide-files.files": []
+}

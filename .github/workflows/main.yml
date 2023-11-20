@@ -1,7 +1,11 @@
 name: Build
 
 on:
-  push
+  push:
+    branches:
+      - main
+    # paths:
+    #   - 'transformation_query/**'
 
 env:
   ACTIONS_RUNNER_DEBUG: true
