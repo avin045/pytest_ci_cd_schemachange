@@ -43,13 +43,18 @@ jobs:
           python -m pip install --upgrade pip
         #   pip install -r requirements.txt
 
-      - name: json
+      - id: json
         uses: juliangruber/read-file-action@v1
         with: 
           path: ./config/config.json
-          run: |
-            VALUE=${{ fromJson(steps.json.outputs.content)['column count'] }}
-            echo "VALUE=$VALUE" >> $GITHUB_ENV
+
+      - name: Set variable
+        run: |
+          VALUE=${{ fromJson(steps.json.outputs.content)['key with spaces'] }}  
+          echo "VALUE=$VALUE" >> $GITHUB_ENV
+
+      - name: Print variable 
+        run: echo $VALUE
             
     #   - name: JSON
     #     uses: juliangruber/read-file-action@v1
