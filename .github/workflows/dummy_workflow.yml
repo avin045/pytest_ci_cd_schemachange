@@ -50,12 +50,13 @@ jobs:
 
       - name: Set variable
         run: |
-          $VALUE = $(fromJson(steps.json.outputs.content) | Select-Object -ExpandProperty 'column count')
+          $VALUE = ${{ fromJson(steps.json.outputs.content) | Select-Object -ExpandProperty 'warehouse' }}
           echo "VALUE=$VALUE" >> $GITHUB_ENV
 
 
-      - name: Print variable 
-        run: echo $VALUE
+
+      # - name: Print variable 
+      #   run: echo $VALUE
             
     #   - name: JSON
     #     uses: juliangruber/read-file-action@v1
