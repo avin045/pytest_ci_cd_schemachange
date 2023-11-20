@@ -50,7 +50,11 @@ jobs:
             path: ./config/config.json
     
       - name: Set variable from JSON
-        run: echo "VALUE=$(echo '${{ steps.read-json.outputs.content }}' | jq -r '.warehouse')" >> $GITHUB_ENV
+        run: |
+            VALUE=$(echo "${{ steps.read-json.outputs.content }}" | jq -r '.key' | sed 's/[\000-\011\013\014\016-\037]/\\&/g')
+            echo "VALUE=$VALUE" >> $GITHUB_ENV
+        # run: echo "VALUE=$(echo '${{ steps.read-json.outputs.content }}' | jq -r '.warehouse')" >> $GITHUB_ENV
+        # VALUE=$(echo "${{ steps.read-json.outputs.content }}" | jq -r '.key' | sed 's/[\000-\011\013\014\016-\037]/\\&/g')
     
       - name: Print variable
         run: echo $VALUE
