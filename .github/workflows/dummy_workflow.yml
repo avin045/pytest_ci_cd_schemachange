@@ -50,7 +50,7 @@ jobs:
 
       - name: Set variable
         run: |
-          VALUE=${{ fromJson(steps.json.outputs.content)['key with spaces'] }}  
+          VALUE=${{ fromJson(steps.json.outputs.content)['column count'] }}  
           echo "VALUE=$VALUE" >> $GITHUB_ENV
 
       - name: Print variable 
