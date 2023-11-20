@@ -47,7 +47,7 @@ jobs:
         id: json
         with: 
           path: ./config/config.json
-      - run: echo "${{ steps.json.outputs.content }}"
+      - run: echo "${{ steps.json.outputs.content."warehouse" }}"
             
     #   - name: JSON
     #     uses: juliangruber/read-file-action@v1
