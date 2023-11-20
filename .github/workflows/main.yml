@@ -6,6 +6,9 @@ on:
       - main
     # paths:
     #   - 'transformation_query/**'
+permissions:
+  contents: read
+  pages: write
 
 env:
   ACTIONS_RUNNER_DEBUG: true
