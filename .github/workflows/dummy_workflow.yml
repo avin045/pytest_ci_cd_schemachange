@@ -50,7 +50,9 @@ jobs:
 
       - name: Set variable
         run: |
-          VALUE=${{ fromJson(steps.json.outputs.content)['column count'] }}
+          $VALUE = $(fromJson(steps.json.outputs.content) | Select-Object -ExpandProperty 'column count')
+          echo "VALUE=$VALUE" >> $GITHUB_ENV
+
 
       - name: Print variable 
         run: echo $VALUE
