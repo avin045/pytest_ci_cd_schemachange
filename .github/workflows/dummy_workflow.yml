@@ -47,9 +47,7 @@ jobs:
         uses: juliangruber/read-file-action@v1
         with: 
           path: ./config/config.json
-
-      - name: Set variable 
-      - run: |
+          run: |
             VALUE=${{ fromJson(steps.json.outputs.content)['column count'] }}
             echo "VALUE=$VALUE" >> $GITHUB_ENV
             
