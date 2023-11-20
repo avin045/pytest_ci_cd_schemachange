@@ -24,7 +24,7 @@ jobs:
       matrix: 
         os: [windows-latest]
         python-version:
-          - "3.11"
+          - "3.9"
     
     name: Test
     runs-on: ${{ matrix.os }}
