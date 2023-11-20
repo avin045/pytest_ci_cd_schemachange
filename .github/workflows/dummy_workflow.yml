@@ -51,13 +51,18 @@ jobs:
     
       - name: Set variable from JSON
         run: |
-            $jsonContent = '${{ steps.read-json.outputs.content | escape }}'
-            $warehouse = (ConvertFrom-Json $jsonContent).warehouse
+            $jsonContent = '${{ steps.read-json.outputs.content }}'
+            $escapedJsonContent = $jsonContent -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
+            echo "JSON_CONTENT=$escapedJsonContent" >> $GITHUB_ENV
+    
+            $warehouse = (ConvertFrom-Json $escapedJsonContent).warehouse
             $escapedWarehouse = $warehouse -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
             echo "VALUE=$escapedWarehouse" >> $GITHUB_ENV
 
       - name: Print variable
-        run: echo $VALUE
+        run: |
+            echo $JSON_CONTENT
+            echo $VALUE
 
 
 
