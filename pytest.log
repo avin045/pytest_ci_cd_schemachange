@@ -1,7 +1,0 @@
-2023-11-20 05:17:50,552 - test_main - INFO - ROWCOUNT => The count of Source : 311
-2023-11-20 05:17:50,849 - test_main - INFO - COLUMN VALIDATION : PASSED, The Column Validation
-2023-11-20 05:17:51,662 - test_main - INFO - DUPLICATION : No Duplicates Found
-2023-11-20 05:17:52,507 - test_main - INFO - GET QUERY FROM SNOWFLAKE : File Written Successfully
-2023-11-20 05:17:53,210 - test_main - INFO - ROWCOUNT => The count of Source : 311
-2023-11-20 05:17:53,492 - test_main - INFO - COLUMN VALIDATION : PASSED, The Column Validation
-2023-11-20 05:17:54,054 - test_main - INFO - DUPLICATION : No Duplicates Found

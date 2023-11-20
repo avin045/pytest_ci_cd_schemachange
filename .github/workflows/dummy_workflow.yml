@@ -1,0 +1,74 @@
+name: Build
+
+on:
+    workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+    # paths:
+    #   - 'transformation_query/**'
+# permissions:
+#   contents: read
+#   pages: write
+
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  snow_user: ${{ secrets.SNOW_USER }}
+  snow_pwd: ${{ secrets.SNOW_PASSWORD }}
+  snow_acc: ${{ secrets.SNOW_ACCOUNT }}
+
+jobs:
+  run-tests:
+    strategy:
+      fail-fast: false
+      matrix: 
+        os: [windows-latest]
+        python-version:
+          - "3.10"
+    
+    name: Test
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+        #   pip install -r requirements.txt
+
+      - uses: juliangruber/read-file-action@v1
+        id: json
+        with: 
+          path: ./config/config.json
+      - run: echo "${{ steps.json.outputs.content }}"
+            
+    #   - name: JSON
+    #     uses: juliangruber/read-file-action@v1
+    #     id: json
+    #     with:
+    #         path: ./config/config.json
+            
+    #   - run: echo "::set-output name=json::$(cat ./config/config.json.json)"
+
+    #   - name: Run Tests
+    #     run: pytest -v
+
+    #   - name: commit files
+    #     run: |
+    #       git config --local user.email "action@github.com"
+    #       git config --local user.name "GitHub Action"
+    #       git add -A
+    #       git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
+          
+    #   - name: push changes
+    #     uses: ad-m/github-push-action@v0.6.0
+    #     with:
+    #       github_token: ${{ secrets.GITHUB_TOKEN }}
+    #       branch: main
