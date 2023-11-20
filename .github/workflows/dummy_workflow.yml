@@ -48,21 +48,31 @@ jobs:
         uses: juliangruber/read-file-action@v1
         with:
             path: ./config/config.json
-    
-      - name: Set variable from JSON
-        run: |
-            $jsonContent = '${{ steps.read-json.outputs.content }}'
-            $escapedJsonContent = $jsonContent -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
-            echo "JSON_CONTENT=$escapedJsonContent" >> $GITHUB_ENV
-    
-            $warehouse = (ConvertFrom-Json $escapedJsonContent).warehouse
-            $escapedWarehouse = $warehouse -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
-            echo "VALUE=$escapedWarehouse" >> $GITHUB_ENV
+            
 
-      - name: Print variable
+      - name: Get variable 
+        id: vars
         run: |
-            echo $JSON_CONTENT
-            echo $VALUE
+            python -c "import test_main; print('::set-output name=warehouse::'+test_main.warehouse)"
+            
+      - name: Print variable
+        run: echo ${{ steps.vars.outputs.warehouse }}
+
+    
+      # - name: Set variable from JSON
+      #   run: |
+      #       $jsonContent = '${{ steps.read-json.outputs.content }}'
+      #       $escapedJsonContent = $jsonContent -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
+      #       echo "JSON_CONTENT=$escapedJsonContent" >> $GITHUB_ENV
+    
+      #       $warehouse = (ConvertFrom-Json $escapedJsonContent).warehouse
+      #       $escapedWarehouse = $warehouse -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
+      #       echo "VALUE=$escapedWarehouse" >> $GITHUB_ENV
+
+      # - name: Print variable
+      #   run: |
+      #       echo $JSON_CONTENT
+      #       echo $VALUE
 
 
 
