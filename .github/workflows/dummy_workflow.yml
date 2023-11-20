@@ -43,8 +43,8 @@ jobs:
           python -m pip install --upgrade pip
         #   pip install -r requirements.txt
 
-      - uses: juliangruber/read-file-action@v1
-        id: json
+      - id: json
+        uses: juliangruber/read-file-action@v1
         with: 
           path: ./config/config.json
 
