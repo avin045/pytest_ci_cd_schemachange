@@ -47,7 +47,11 @@ jobs:
         id: json
         with: 
           path: ./config/config.json
-      - run: echo "${{ steps.json.outputs.content."warehouse" }}"
+
+      - name: Set variable 
+      - run: |
+            VALUE=${{ fromJson(steps.json.outputs.content)['column count'] }}
+            echo "VALUE=$VALUE" >> $GITHUB_ENV
             
     #   - name: JSON
     #     uses: juliangruber/read-file-action@v1
