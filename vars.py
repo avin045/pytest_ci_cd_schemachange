@@ -1,4 +1,5 @@
 import os
+import json
 
 # Parse the JSON string into a Python dictionary
 json_str = open('./config/config.json','r+').read()
