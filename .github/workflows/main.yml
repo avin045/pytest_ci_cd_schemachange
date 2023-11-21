@@ -49,7 +49,7 @@ jobs:
       - name: Run Variable File
         run: python vars.py
       
-      - run: echo $GITHUB_WORKSPACE
+      # - run: echo $GITHUB_WORKSPACE
 
       - name: commit files
         run: |
@@ -58,12 +58,17 @@ jobs:
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated" --allow-empty) 
 
-          
       - name: push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main            
+          branch: main
+          
+      - name: run schemachange!
+        run: |
+          pip install schemachange
+          schemachange -f ${GITHUB_WORKSPACE}/schema_change -a ${{ secrets.SNOW_ACCOUNT }} -u ${{ secrets.SNOW_USER }} -u ${{ secrets.SNOW_USER }} -r ${{ env.ROLE }} -w ${{ env.WAREHOUSE }} -d ${{ env.DEPLOY_DB }} -c ${{ env.DEPLOY_DB }}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          
       
       # - name: Run Schemachange
       #   # env:
