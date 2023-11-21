@@ -24,4 +24,4 @@ file_name = f'''{config_dict['view/table name'].split('.')[1].replace('"','')}.s
 env_file = os.getenv('GITHUB_ENV')
 
 with open(env_file, "a") as myfile:
-    myfile.write(f"MY_VAR={warehouse:Any}")
+    myfile.write(f"MY_VAR={warehouse}")
