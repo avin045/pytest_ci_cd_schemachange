@@ -15,7 +15,6 @@ env:
   ACTIONS_RUNNER_DEBUG: true
   snow_user: ${{ secrets.SNOW_USER }}
   snow_pwd: ${{ secrets.SNOW_PASSWORD }}
-  # SNOWFLAKE_PASSWORD: ${{ secrets.SNOW_PASSWORD }}
   snow_acc: ${{ secrets.SNOW_ACCOUNT }}
 
 jobs:
