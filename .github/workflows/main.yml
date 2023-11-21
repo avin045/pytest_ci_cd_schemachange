@@ -48,6 +48,8 @@ jobs:
 
       - name: Run Variable File
         run: python vars.py
+      
+      - run: echo $GITHUB_WORKSPACE
 
       - name: commit files
         run: |
@@ -61,30 +63,30 @@ jobs:
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main                
+          branch: main            
       
-      - name: Run Schemachange
-        # env:
-        #   ACTIONS_RUNNER_DEBUG: true
-        #   SF_ACCOUNT: ${{ secrets.SNOW_ACCOUNT }}
-        #   SF_USERNAME: ${{ secrets.SNOW_USER }}
-        #   SF_ROLE: ${{ env.ROLE }}
-        #   SF_WAREHOUSE: ${{ env.WAREHOUSE }}
-        #   SF_DATABASE: ${{ env.DB }}
-        #   SF_DEPLOY_DATABASE: ${{ env.DEPLOY_DB }}
-        #   SNOWFLAKE_PASSWORD: ${{ secrets.SNOW_PASSWORD }}
-        run: |
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          python --version
-          echo "Step 1: Installing schemachange"
-          pip install schemachange
+      # - name: Run Schemachange
+      #   # env:
+      #   #   ACTIONS_RUNNER_DEBUG: true
+      #   #   SF_ACCOUNT: ${{ secrets.SNOW_ACCOUNT }}
+      #   #   SF_USERNAME: ${{ secrets.SNOW_USER }}
+      #   #   SF_ROLE: ${{ env.ROLE }}
+      #   #   SF_WAREHOUSE: ${{ env.WAREHOUSE }}
+      #   #   SF_DATABASE: ${{ env.DB }}
+      #   #   SF_DEPLOY_DATABASE: ${{ env.DEPLOY_DB }}
+      #   #   SNOWFLAKE_PASSWORD: ${{ secrets.SNOW_PASSWORD }}
+      #   run: |
+      #     echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+      #     python --version
+      #     echo "Step 1: Installing schemachange"
+      #     pip install schemachange
           
-          echo "Step 2: Running schemachange"
-          echo "SF_ACCOUNT:  ${{ secrets.SNOW_ACCOUNT }}"
-          echo "SF_USERNAME: ${{ secrets.SNOW_USER }}"
-          echo "SF_ROLE: ${{ env.ROLE }}"
+      #     echo "Step 2: Running schemachange"
+      #     echo "SF_ACCOUNT:  ${{ secrets.SNOW_ACCOUNT }}"
+      #     echo "SF_USERNAME: ${{ secrets.SNOW_USER }}"
+      #     echo "SF_ROLE: ${{ env.ROLE }}"
 
-          schemachange -f ../../schema_change -a ${{ secrets.SNOW_ACCOUNT }} -u ${{ secrets.SNOW_USER }} -u ${{ secrets.SNOW_USER }} -r ${{ env.ROLE }} -w ${{ env.WAREHOUSE }} -d ${{ env.DEPLOY_DB }} -c ${{ env.DEPLOY_DB }}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+      #     schemachange -f ../../schema_change -a ${{ secrets.SNOW_ACCOUNT }} -u ${{ secrets.SNOW_USER }} -u ${{ secrets.SNOW_USER }} -r ${{ env.ROLE }} -w ${{ env.WAREHOUSE }} -d ${{ env.DEPLOY_DB }} -c ${{ env.DEPLOY_DB }}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
 
           
 # schemachange -f $GITHUB_WORKSPACE/schema_change -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DEPLOY_DATABASE -c $SF_DEPLOY_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
