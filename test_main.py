@@ -95,7 +95,7 @@ def create_sql_script():
         logger.info(f"GET QUERY FROM SNOWFLAKE : {log_res}")
     
     # Writing the query which using for Schemachange
-    with open(fr"./schema_change/{deploy_version}__{file_name}",'w') as file_:
+    with open(fr"./schema_change/V{deploy_version}__{file_name}",'w') as file_:
         file_.write(query)
         log_res = 'Schema_change File Written Successfully'
         logger.info(f"WRITTEN IN SCHEMA CHANGE FOLDER : {log_res}")
