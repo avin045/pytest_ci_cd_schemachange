@@ -15,6 +15,7 @@ env:
   ACTIONS_RUNNER_DEBUG: true
   snow_user: ${{ secrets.SNOW_USER }}
   snow_pwd: ${{ secrets.SNOW_PASSWORD }}
+  # SNOWFLAKE_PASSWORD: ${{ secrets.SNOW_PASSWORD }}
   snow_acc: ${{ secrets.SNOW_ACCOUNT }}
 
 jobs:
@@ -65,7 +66,9 @@ jobs:
           pip install schemachange
           
           echo "Step 2: Running schemachange"
-          schemachange -f $GITHUB_WORKSPACE/schema_change/ -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DEPLOY_DATABASE -c $SF_DEPLOY_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          echo "SF_ACCOUNT: $SF_ACCOUNT"
+          echo "SF_USERNAME: $SF_USERNAME"
+          schemachange -f $GITHUB_WORKSPACE/schema_change -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DEPLOY_DATABASE -c $SF_DEPLOY_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
 
       - name: commit files
         run: |
