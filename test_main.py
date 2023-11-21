@@ -84,12 +84,21 @@ def create_sql_script():
     # If that Schema not present in FOLDER then Create it as a folder
     if folder_name not in os.listdir(r'./EnterpriseDatabase/'):
         os.mkdir(fr'./EnterpriseDatabase/{folder_name}')
+    
+    if 'schema_change' not in os.listdir(r'./'):
+        os.mkdir(r'./schema_change/')
 
     # Writing the Query which gets from Snowflake
     with open(fr"./EnterpriseDatabase/{folder_name}/{file_name}",'w') as file_:
         file_.write(query)
         log_res = 'File Written Successfully'
         logger.info(f"GET QUERY FROM SNOWFLAKE : {log_res}")
+    
+    # Writing the query which using for Schemachange
+    with open(fr"./schema_change/{deploy_version}__{folder_name}/{file_name}",'w') as file_:
+        file_.write(query)
+        log_res = 'Schema_change File Written Successfully'
+        logger.info(f"WRITTEN IN SCHEMA CHANGE FOLDER : {log_res}")
     
     return fr"./EnterpriseDatabase/{folder_name}/{file_name}"
 

@@ -21,6 +21,7 @@ folder_name = config_dict["view/table name"].split(".")[0]
 file_name = f'''{config_dict['view/table name'].split('.')[1].replace('"','')}.sql'''
 
 deploy_database = config_dict['Database to Deploy']
+deploy_version = config_dict['Deployment version']
 # ---------------------- Getting Data From JSON - End ---------------------- #
 
 env_file = os.getenv('GITHUB_ENV')
@@ -31,4 +32,5 @@ with open(env_file, "a") as myfile:
     myfile.write(f"DB={database_from_config}\n")
     myfile.write(f"SCHEMA={schema_from_config}\n")
     myfile.write(f"TB_VI_NAME={view_table_name_from_config}\n")
-    myfile.write(f"DEPLOY_DB={deploy_database}")
+    myfile.write(f"DEPLOY_DB={deploy_database}\n")
+    myfile.write(f"DEPLOY_VERSION={deploy_version}")
