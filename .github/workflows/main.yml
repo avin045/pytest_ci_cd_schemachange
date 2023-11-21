@@ -1,9 +1,10 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  workflow_dispatch:
+    # branches:
+    #   - main
     # paths:
     #   - 'transformation_query/**'
 # permissions:
