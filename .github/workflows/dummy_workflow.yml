@@ -43,20 +43,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Read JSON file
-        id: read-json
-        uses: juliangruber/read-file-action@v1
-        with:
-            path: ./config/config.json
+      - run: python vars.py
+      - run: echo ${{ env.MY_VAR }}
+
+      # - name: Read JSON file
+      #   id: read-json
+      #   uses: juliangruber/read-file-action@v1
+      #   with:
+      #       path: ./config/config.json
             
 
-      - name: Get variable 
-        id: vars
-        run: |
-            python -c "import test_main; print('::set-output name=warehouse::'+test_main.warehouse)"
+      # - name: Get variable 
+      #   id: vars
+      #   run: |
+      #       python -c "import test_main; print('::set-output name=warehouse::'+test_main.warehouse)"
             
-      - name: Print variable
-        run: echo ${{ steps.vars.outputs.warehouse }}
+      # - name: Print variable
+      #   run: echo ${{ steps.vars.outputs.warehouse }}
 
     
       # - name: Set variable from JSON
