@@ -30,5 +30,5 @@ with open(env_file, "a") as myfile:
     myfile.write(f"ROLE={role}\n")
     myfile.write(f"DB={database_from_config}\n")
     myfile.write(f"SCHEMA={schema_from_config}\n")
-    myfile.write(f"TB_VI_NAME={schema_from_config}\n")
+    myfile.write(f"TB_VI_NAME={view_table_name_from_config}\n")
     myfile.write(f"DEPLOY_DB={deploy_database}")
