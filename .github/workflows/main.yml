@@ -83,9 +83,8 @@ jobs:
           echo "SF_ACCOUNT:  ${{ secrets.SNOW_ACCOUNT }}"
           echo "SF_USERNAME: ${{ secrets.SNOW_USER }}"
           echo "SF_ROLE: ${{ env.ROLE }}"
-          echo "env: $GITHUB_WORKSPACE"
 
-          schemachange -f $GITHUB_WORKSPACE/schema_change -a ${{ secrets.SNOW_ACCOUNT }} -u ${{ secrets.SNOW_USER }} -u ${{ secrets.SNOW_USER }} -r ${{ env.ROLE }} -w ${{ env.WAREHOUSE }} -d ${{ env.DEPLOY_DB }} -c ${{ env.DEPLOY_DB }}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          schemachange -f ../../schema_change -a ${{ secrets.SNOW_ACCOUNT }} -u ${{ secrets.SNOW_USER }} -u ${{ secrets.SNOW_USER }} -r ${{ env.ROLE }} -w ${{ env.WAREHOUSE }} -d ${{ env.DEPLOY_DB }} -c ${{ env.DEPLOY_DB }}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
 
           
 # schemachange -f $GITHUB_WORKSPACE/schema_change -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DEPLOY_DATABASE -c $SF_DEPLOY_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
