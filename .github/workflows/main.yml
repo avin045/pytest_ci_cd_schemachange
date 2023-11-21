@@ -16,6 +16,7 @@ env:
   snow_user: ${{ secrets.SNOW_USER }}
   snow_pwd: ${{ secrets.SNOW_PASSWORD }}
   snow_acc: ${{ secrets.SNOW_ACCOUNT }}
+  GIT_WORKSPACE_: ${{ github.workspace }}
 
 jobs:
   run-tests:
@@ -67,7 +68,7 @@ jobs:
       - name: run schemachange!
         run: |
           pip install schemachange
-          schemachange -f ${GITHUB_WORKSPACE}/EnterpriseDatabase/REPORTS -a ${{ secrets.SNOW_ACCOUNT }} -u ${{ secrets.SNOW_USER }} -u ${{ secrets.SNOW_USER }} -r ${{ env.ROLE }} -w ${{ env.WAREHOUSE }} -d ${{ env.DEPLOY_DB }} -c ${{ env.DEPLOY_DB }}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+          schemachange -f $GIT_WORKSPACE_/EnterpriseDatabase/REPORTS -a ${{ secrets.SNOW_ACCOUNT }} -u ${{ secrets.SNOW_USER }} -u ${{ secrets.SNOW_USER }} -r ${{ env.ROLE }} -w ${{ env.WAREHOUSE }} -d ${{ env.DEPLOY_DB }} -c ${{ env.DEPLOY_DB }}.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
           
       
       # - name: Run Schemachange
