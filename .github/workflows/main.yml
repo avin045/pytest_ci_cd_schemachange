@@ -46,6 +46,27 @@ jobs:
       - name: Run Tests
         run: pytest -v
 
+      - name: Run Variable File
+        run: python vars.py
+      
+      - name: Run Schemachange
+        env:
+          SF_ACCOUNT: ${{ secrets.SNOW_ACCOUNT }}
+          SF_USERNAME: ${{ secrets.SNOW_USER }}
+          SF_ROLE: ${{ env.ROLE }}
+          SF_WAREHOUSE: ${{ env.WAREHOUSE }}
+          SF_DATABASE: ${{ env.DB }}
+          SF_DEPLOY_DATABASE: ${{ env.DEPLOY_DB }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOW_PASSWORD }}
+        run: |
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          python --version
+          echo "Step 1: Installing schemachange"
+          pip install schemachange
+          
+          echo "Step 2: Running schemachange"
+          schemachange -f $GITHUB_WORKSPACE/EnterpriseDatabase/REPORTS -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DEPLOY_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
+
       - name: commit files
         run: |
           git config --local user.email "action@github.com"
