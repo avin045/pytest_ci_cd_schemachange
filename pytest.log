@@ -1,5 +1,5 @@
-2023-11-21 12:52:07,032 - test_main - INFO - ROWCOUNT => The count of Source : 311
-2023-11-21 12:52:07,329 - test_main - INFO - COLUMN VALIDATION : PASSED, The Column Validation
-2023-11-21 12:52:08,173 - test_main - INFO - DUPLICATION : No Duplicates Found
-2023-11-21 12:52:09,001 - test_main - INFO - GET QUERY FROM SNOWFLAKE : File Written Successfully
-2023-11-21 12:52:09,001 - test_main - INFO - WRITTEN IN SCHEMA CHANGE FOLDER : Schema_change File Written Successfully
+2023-11-21 13:25:02,005 - test_main - INFO - ROWCOUNT => The count of Source : 311
+2023-11-21 13:25:02,239 - test_main - INFO - COLUMN VALIDATION : PASSED, The Column Validation
+2023-11-21 13:25:02,943 - test_main - INFO - DUPLICATION : No Duplicates Found
+2023-11-21 13:25:03,615 - test_main - INFO - GET QUERY FROM SNOWFLAKE : File Written Successfully
+2023-11-21 13:25:03,615 - test_main - INFO - WRITTEN IN SCHEMA CHANGE FOLDER : Schema_change File Written Successfully
