@@ -4,5 +4,6 @@
     "database" : "HR_DB",
     "schema": "HR_SCHEMA",
     "view/table name": "REPORTS.\"HR Report\"",
-    "column count" : 17
+    "column count" : 17,
+    "Database to Deploy" : "HR_DB_QA"
 }

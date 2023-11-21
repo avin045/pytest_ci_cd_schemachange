@@ -68,26 +68,10 @@ session.use_database(database=config_dict['database'])
 session.use_schema(schema=config_dict['schema'])
 table_ = session.table(config_dict['view/table name'])
 
-
-# TEST CASES
-def test_count_check():
-    logger.info(f"ROWCOUNT => The count of Source : {table_.count()}" if table_.count() > 0 else False)
-    assert table_.count() > 0
-
-def test_column_validation():
-    column_validation = len(table_.columns) == expected_column_count or not(len(table_.columns) < expected_column_count)
-    log_res = "PASSED, The Column Validation" if column_validation else 'NOT PASSED'
-    logger.info(f"COLUMN VALIDATION : {log_res}")
-    assert column_validation == True
-
-def test_duplication():
-    group_by_ = table_.group_by(table_.columns).count().filter(col('count') > 1).collect()
-    log_res = "No Duplicates Found" if not(bool(group_by_)) else "Duplicates Found"
-    logger.info(f"DUPLICATION : {log_res}")
-    assert not(bool(group_by_)) == True
-
-def check_pytest():
-  exitcode = pytest.main() # To execute pytest and get the exit code
+# SCRIPT FILE GENERATION
+@pytest.fixture(scope="module")
+def create_sql_script():
+  exitcode = pytest.ExitCode.OK # To execute pytest and get the exit code
   if exitcode == 0:
     # Getting query without DB Name from snofwflake
     query = extract_query(
@@ -107,7 +91,24 @@ def check_pytest():
         log_res = 'File Written Successfully'
         logger.info(f"GET QUERY FROM SNOWFLAKE : {log_res}")
     
+    return fr"./EnterpriseDatabase/{folder_name}/{file_name}"
 
-# result = check_pytest()
-if 'pytest' in sys.modules:
-    check_pytest()
+# TEST CASES
+def test_count_check():
+    logger.info(f"ROWCOUNT => The count of Source : {table_.count()}" if table_.count() > 0 else False)
+    assert table_.count() > 0
+
+def test_column_validation():
+    column_validation = len(table_.columns) == expected_column_count or not(len(table_.columns) < expected_column_count)
+    log_res = "PASSED, The Column Validation" if column_validation else 'NOT PASSED'
+    logger.info(f"COLUMN VALIDATION : {log_res}")
+    assert column_validation
+
+def test_duplication():
+    group_by_ = table_.group_by(table_.columns).count().filter(col('count') > 1).collect()
+    log_res = "No Duplicates Found" if not(bool(group_by_)) else "Duplicates Found"
+    logger.info(f"DUPLICATION : {log_res}")
+    assert not(bool(group_by_))
+    
+def test_script_created(create_sql_script):
+  assert os.path.exists(create_sql_script)

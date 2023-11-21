@@ -44,7 +44,12 @@ jobs:
           pip install -r requirements.txt
 
       - run: python vars.py
-      - run: echo ${{ env.MY_VAR }}
+      - run: echo ${{ env.WAREHOUSE }}
+      - run: echo ${{ env.ROLE }}
+      - run: echo ${{ env.DB }}
+      - run: echo ${{ env.SCHEMA }}
+      - run: echo ${{ env.TB_VI_NAME }}
+      - run: echo ${{ env.DEPLOY_DB }}
 
       # - name: Read JSON file
       #   id: read-json
