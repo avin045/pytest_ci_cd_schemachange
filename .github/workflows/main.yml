@@ -17,6 +17,7 @@ env:
   snow_pwd: ${{ secrets.SNOW_PASSWORD }}
   snow_acc: ${{ secrets.SNOW_ACCOUNT }}
   GIT_WORKSPACE_: ${{ github.workspace }}
+  SNOWFLAKE_PASSWORD: ${{ secrets.SNOW_PASSWORD }}
 
 jobs:
   run-tests:
