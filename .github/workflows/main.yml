@@ -54,7 +54,14 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated" --allow-empty)        
+          git diff-index --quiet HEAD || (git commit -a -m "updated" --allow-empty) 
+
+          
+      - name: push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main                
       
       - name: Run Schemachange
         env:
@@ -79,9 +86,3 @@ jobs:
 
           
 # schemachange -f $GITHUB_WORKSPACE/schema_change -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DEPLOY_DATABASE -c $SF_DEPLOY_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
-          
-      - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
