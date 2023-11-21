@@ -1,3 +1,9 @@
+import os
+
+# Parse the JSON string into a Python dictionary
+json_str = open('./config/config.json','r+').read()
+config_dict = json.loads(json_str)
+
 # ---------------------- Getting Data From JSON - Start ---------------------- #
 user = os.environ.get("snow_user")
 password = os.environ.get("snow_pwd")
