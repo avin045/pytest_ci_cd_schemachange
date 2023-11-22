@@ -1,0 +1,112 @@
+name: Build
+
+on:
+    workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+    # paths:
+    #   - 'transformation_query/**'
+# permissions:
+#   contents: read
+#   pages: write
+
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  snow_user: ${{ secrets.SNOW_USER }}
+  snow_pwd: ${{ secrets.SNOW_PASSWORD }}
+  snow_acc: ${{ secrets.SNOW_ACCOUNT }}
+
+jobs:
+  run-tests:
+    strategy:
+      fail-fast: false
+      matrix: 
+        os: [windows-latest]
+        python-version:
+          - "3.9"
+    
+    name: Test
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - run: python vars.py
+      - run: echo ${{ env.WAREHOUSE }}
+      - run: echo ${{ env.ROLE }}
+      - run: echo ${{ env.DB }}
+      - run: echo ${{ env.SCHEMA }}
+      - run: echo ${{ env.TB_VI_NAME }}
+      - run: echo ${{ env.DEPLOY_DB }}
+
+      # - name: Read JSON file
+      #   id: read-json
+      #   uses: juliangruber/read-file-action@v1
+      #   with:
+      #       path: ./config/config.json
+            
+
+      # - name: Get variable 
+      #   id: vars
+      #   run: |
+      #       python -c "import test_main; print('::set-output name=warehouse::'+test_main.warehouse)"
+            
+      # - name: Print variable
+      #   run: echo ${{ steps.vars.outputs.warehouse }}
+
+    
+      # - name: Set variable from JSON
+      #   run: |
+      #       $jsonContent = '${{ steps.read-json.outputs.content }}'
+      #       $escapedJsonContent = $jsonContent -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
+      #       echo "JSON_CONTENT=$escapedJsonContent" >> $GITHUB_ENV
+    
+      #       $warehouse = (ConvertFrom-Json $escapedJsonContent).warehouse
+      #       $escapedWarehouse = $warehouse -replace "[\000-\011\013\014\016-\037]", {param($match) '\\'+[System.Convert]::ToChar([System.Convert]::ToUInt32($match, 10))}
+      #       echo "VALUE=$escapedWarehouse" >> $GITHUB_ENV
+
+      # - name: Print variable
+      #   run: |
+      #       echo $JSON_CONTENT
+      #       echo $VALUE
+
+
+
+      # - name: Print variable 
+      #   run: echo $VALUE
+            
+    #   - name: JSON
+    #     uses: juliangruber/read-file-action@v1
+    #     id: json
+    #     with:
+    #         path: ./config/config.json
+            
+    #   - run: echo "::set-output name=json::$(cat ./config/config.json.json)"
+
+    #   - name: Run Tests
+    #     run: pytest -v
+
+    #   - name: commit files
+    #     run: |
+    #       git config --local user.email "action@github.com"
+    #       git config --local user.name "GitHub Action"
+    #       git add -A
+    #       git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
+          
+    #   - name: push changes
+    #     uses: ad-m/github-push-action@v0.6.0
+    #     with:
+    #       github_token: ${{ secrets.GITHUB_TOKEN }}
+    #       branch: main
